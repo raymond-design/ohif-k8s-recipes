@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ohif-viewer
+  name: ohif-viewer
+spec:
+  containers:
+    - image: webapp:latest
+      name: webapp
+      ports:
+        - containerPort: 443
+        - containerPort: 80
+      resources: {}
+      volumeMounts:
+        - mountPath: /usr/local/openresty/nginx/conf/nginx.conf
+          name: ohif-viewer-claim0
+          readOnly: true
+        - mountPath: /var/logs/nginx
+          name: ohif-viewer-claim1
+  restartPolicy: OnFailure
+  volumes:
+    - name: ohif-viewer-claim0
+      persistentVolumeClaim:
+        claimName: ohif-viewer-claim0
+        readOnly: true
+    - name: ohif-viewer-claim1
+      persistentVolumeClaim:
+        claimName: ohif-viewer-claim1
+status: {}
